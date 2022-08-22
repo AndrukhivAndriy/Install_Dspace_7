@@ -45,3 +45,21 @@ Then install PostgreSQL 13: *sudo apt install postgresql-13 postgresql-contrib-1
 Add the following line to the bottom of the file */etc/postgresql/11/main/pg_hba.conf* then save and close: *host    dspace       dspace      127.0.0.1/32         md5*
 
 We have to create the dspace database user and the dspace database: *sudo su postgres* 
+
+Then create the dspace database user with the following command: *createuser dspace*
+
+Now create the dspace database: *createdb dspace -E UNICODE*
+
+We need to grant permissions to the database user called dspace: *psql -d dspace*, then tyoe *CREATE EXTENSION pgcrypto;*
+
+Create the password: *ALTER ROLE dspace WITH PASSWORD 'secure_password_here';*
+
+Then give the dspace database user ownership of the dspace database: *ALTER DATABASE dspace OWNER TO dspace;*
+
+Then give all privileges to dspace database user on the dspace database: *GRANT ALL PRIVILEGES ON DATABASE dspace TO dspace;*
+
+Exit the Postgresql: *\q*
+
+Exit the postgres user session: *exit*
+
+Restart Postgresql: *systemctl restart postgresql*
