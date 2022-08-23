@@ -63,3 +63,14 @@ Exit the Postgresql: *\q*
 Exit the postgres user session: *exit*
 
 Restart Postgresql: *systemctl restart postgresql*
+
+## Install Apache Solr
+
+We are looking for v 8.11 or above. NOT v9
+Create a directory to download and install solr: *sudo mkdir /opt/solr*
+
+Then download solr: *wget -c https://downloads.apache.org/lucene/solr/8.11.2/solr-8.11.2.tgz*
+
+Untar it and start: *../bin/solr start &* . Confirm solr is running with: *../bin/solr status*
+
+
