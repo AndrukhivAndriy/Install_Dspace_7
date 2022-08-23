@@ -73,4 +73,59 @@ Then download solr: *wget -c https://downloads.apache.org/lucene/solr/8.11.2/sol
 
 Untar it and start: *../bin/solr start &* . Confirm solr is running with: *../bin/solr status*
 
+It can't start under root user (parametr "-force" it's not good for security), so then we will change it
 
+ ##Install Apache Tomcat v9
+ 
+ Use the following command to install Apache Tomcat: *sudo apt install tomcat9*
+ 
+ Edit /etc/default/tomcat9 and define JAVA_HOME and JAVA_OPTS: 
+ 
+ 1. *JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64*
+ 2. *JAVA_OPTS="-Djava.awt.headless=true -Xmx6G -Xms2G -Dfile.encoding=UTF-8"*,
+ 
+ where -Xmx -- specifies the maximum memory allocation pool for a JVM, Xms -- specifies the initial memory allocation pool
+ 
+ Locate the setting JAVA_OPTS settings accordingly depending on how much RAM your system has.
+
+Edit the file */etc/tomcat9/server.xml* by editing as shown. Ensure that the active connector element in the file is similar to the one below:
+
+        <Connector port="8080"
+              minSpareThreads="25"
+              enableLookups="false"
+              redirectPort="8443"
+              connectionTimeout="20000"
+              disableUploadTimeout="true"
+              URIEncoding="UTF-8"/>
+              
+Restart tomcat9 as shown below: *sudo systemctl restart tomcat9*
+When you access the ip address of your system via the browser at port 8080 you should see the default tomcat page, **It works !**. 
+
+If not:
+
+1. Execute the following command to check ports for apache tomcat server: *ss -ltn*
+2. Execute the following command to permit the incoming from any type of source to port “8080”: *sudo ufw allow from any to any port 8080 proto tcp*
+3. Check again( also you can check via text browser LYNX - *apt install lynx* and then type: *lynx 127.0.0.1:8080*)
+
+## Install DSPACE Backend
+
+Get the latest DSpace 7.3 release and extract it:
+
+1. *mkdir /opt/dspaceinst*
+2. *cd /opt/dspaceinst* 
+3. *wget -c https://github.com/DSpace/DSpace/archive/refs/tags/dspace-7.3.tar.gz*
+4. *tar zxvf dspace-7.3.tar.gz*
+
+Create a configuration file by copying the existing example file: *cp /opt/dspaceinst/DSpace-dspace-7.3/dspace/config/local.cfg.EXAMPLE /opt/dspaceinst/DSpace-dspace-7.3/dspace/config/local.cfg*
+
+Edit the file */opt/dspaceinst/DSpace-dspace-7.3/dspace/config/local.cfg* and set some common required settings:
+
+     dspace.dir=/home/dspace-7
+     solr.server = http://localhost:8983/solr
+     db.url = jdbc:postgresql://localhost:5432/dspace
+     db.driver = org.postgresql.Driver
+     db.username = dspace
+     db.password = secure_password_here
+     
+## Build and install
+     
