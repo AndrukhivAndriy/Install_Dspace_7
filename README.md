@@ -129,3 +129,47 @@ Edit the file */opt/dspaceinst/DSpace-dspace-7.3/dspace/config/local.cfg* and se
      
 ## Build and install
      
+Ensure you are in the source code directory */opt/dspaceinst/DSpace-dspace-7.3* and run: *mvn package*
+
+At the end you will see: *....BUILD SUCCESS .....*
+
+Then we install Dspace. Type: *cd /opt/dspaceinst/DSpace-dspace-7.3/dspace/target/dspace-installer*
+
+And run: *ant fresh_install*
+
+At the end you will see: * .... BUILD SUCCESSFUL ....*
+
+Copy */dspace/webapps/server* to */var/lib/tomcat9/webapps*
+
+Change owner to tomcat user: * chown -R tomcat:tomcat /var/lib/tomcat9/webapps*
+
+Copy Solr configsets */dspace/solr/ALL_DIRS* to *opt/solr/server/solr/configsets* 
+
+Initialize database: */dspace/bin/dspace database migrate*
+
+Start Solr under noroot user: *su USER -c '/opt/solr/bin/solr start &'*
+
+Restart Tomcat go to http://server-ip:8080/server . You will see HALL BROWSER
+
+Create an initial administrator account: *dspace/bin/dspace create-administrator*
+
+## Migrate from v6.3 to 7.3
+
+Dump database from server where dspace v6.3 installed: *pg_dump -h localhost -U dspace > /home/dspace.sql*
+
+###Restore this database on new server:
+
+1. *su postgres*
+2. *psql* 
+3. *REVOKE CONNECT ON DATABASE dspace FROM public;*
+4. *SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'dspace';*
+5. *\q*
+6. *dropdb dspace*
+7. *sudo service postgresql restart* 
+8.  *createdb dspace -E UNICODE*
+9.  *psql -d dspace*, then tyoe *CREATE EXTENSION pgcrypto;*
+10.  *\q*
+11.  Copy dumped file dspace.sql to new server to folder /home
+12.  *psql -h localhost -U dspace < /home/dump.sql*
+13.  */dspace/bin/dspace database migrate ignored*
+14.  copy folder /dspace/assetstore from dspace v6.3 to the same place v7.3
