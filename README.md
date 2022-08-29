@@ -173,3 +173,34 @@ Dump database from server where dspace v6.3 installed: *pg_dump -h localhost -U 
 12.  *psql -h localhost -U dspace < /home/dump.sql*
 13.  */dspace/bin/dspace database migrate ignored*
 14.  copy folder /dspace/assetstore from dspace v6.3 to the same place v7.3
+
+## Install frontend
+
+### Install Node.js (v14.x or v16.x). We will install v14.
+
+Will install via node version manager. Go to this link *https://github.com/creationix/nvm/releases* to check the current stable release.
+
+Run *curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.39.1/install.sh | bash*. This will install nvm v0.39.1
+
+Reload your terminal session and type the command below just to ensure that nvm installed correctly: *nvm --version*
+
+To see node.js version LTS, type: *nvm ls-remote*. Check version to install and type like this: *nvm install 14.20.0* 
+
+### Install Yarn v1.x
+
+Let's install Yarn on Ubuntu via the Debian package repository:
+
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+
+Update the system and install yarn: *sudo apt update && sudo apt install yarn*
+
+Confirm that yarn is installed: *yarn --version*. For it was 1.22.19. It will not work with v2.
+
+Create folder */opt/dspaceinst/frontend* and download the source *https://github.com/DSpace/dspace-angular/archive/refs/tags/dspace-7.3.tar.gz*
+
+Untar archive *tar xzvf dspace-7.3.tar.gz*
+
+Create folder */dspace-angular* in root /. Copy files to new directory.
+
+### 
