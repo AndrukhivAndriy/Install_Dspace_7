@@ -190,8 +190,8 @@ To see node.js version LTS, type: *nvm ls-remote*. Check version to install and 
 
 Let's install Yarn on Ubuntu via the Debian package repository:
 
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - 
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 
 Update the system and install yarn: *sudo apt update && sudo apt install yarn*
 
@@ -201,6 +201,17 @@ Create folder */opt/dspaceinst/frontend* and download the source *https://github
 
 Untar archive *tar xzvf dspace-7.3.tar.gz*
 
-Create folder */dspace-angular* in root /. Copy files to new directory.
+Install process Manager for Node.js: *npm install --global pm2*
 
-### 
+*cd /opt/dspaceinst/frontend/dspace-angular-7.3* and run *sudo yarn install*
+
+Build the User Interface for Production: *yarn build:prod*
+
+Deployment: *cp -r /opt/dspaceinst/frontend/dspace-angular-7.3/dist /dspace-ui-deploy*
+
+The structure of /dspace-ui-deploy:
+    /dist
+       /browser (compiled client-side code)
+       /server  (compiled server-side code, including "main.js")
+    /config     (Optionally created in the "Configuration" step below)
+       /config.prod.yml (Optionally created in the "Configuration" step below)
