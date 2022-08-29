@@ -210,8 +210,8 @@ Build the User Interface for Production: *yarn build:prod*
 Deployment: *cp -r /opt/dspaceinst/frontend/dspace-angular-7.3/dist /dspace-ui-deploy*
 
 The structure of /dspace-ui-deploy:
-    /dist
-       /browser (compiled client-side code)
-       /server  (compiled server-side code, including "main.js")
-    /config     (Optionally created in the "Configuration" step below)
-       /config.prod.yml (Optionally created in the "Configuration" step below)
+      /dist
+        /browser 
+        /server  
+     /config     (Will create later)
+       /config.prod.yml (Will create later)
