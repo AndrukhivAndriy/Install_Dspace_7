@@ -216,3 +216,39 @@ Deployment: *cp -r /opt/dspaceinst/frontend/dspace-angular-7.3/dist /dspace-ui-d
              /server  
            /config     (Will create later)
              /config.prod.yml (Will create later)
+
+
+Create a "config.prod.yml" at /dspace-ui-deploy/config/config.prod.yml:
+
+       ui:
+        ssl: false
+        host: localhost
+        port: 4000
+        nameSpace: /
+        
+      rest:
+       ssl: false
+       host: localhost
+       port: 8080
+       nameSpace: /server
+       
+ Let's start UI via PM2. Create file dspace-ui-deploy/dspace-ui.json :
+ 
+       {
+    "apps": [
+        {
+           "name": "dspace-ui",
+           "cwd": "/dspace-ui-deploy",
+           "script": "dist/server/main.js",
+           "env": {
+              "NODE_ENV": "production"
+           }
+         }
+           ]
+      }
+      
+Start the application using PM2: *pm2 start dspace-ui.json*
+
+Stop the application using PM2: *pm2 stop dspace-ui.json*
+
+Run your browser and type *http://localhost:4000* . Dspace installed!!
