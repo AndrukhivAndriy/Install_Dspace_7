@@ -252,3 +252,25 @@ Start the application using PM2: *pm2 start dspace-ui.json*
 Stop the application using PM2: *pm2 stop dspace-ui.json*
 
 Run your browser and type *http://localhost:4000* . Dspace installed!!
+
+## Config different fitches
+
+Config Tomcat9 SSL
+
+1. Put your certs (.srt and .key files) in */etc/tomcat9/private*
+2. *openssl pkcs12 -export -in /etc/tomcat9/private/sslchain.crt -inkey /etc/tomcat9/private/key.key -out /etc/tomcat9/private/server.p12 -name tomcat -CAfile /etc/tomcat9/private/certificate.pem -caname root*  ------ and type *yourpassword*
+3. *keytool -importkeystore -deststorepass yourpassword -destkeypass yourpassword -destkeystore /etc/tomcat9/private/server.keystore -srckeystore /etc/tomcat9/private/server.p12 -srcstoretype PKCS12 -srcstorepass yourpassword -alias tomcat*
+4. Add this to */etc/tomcat9/server.xml*:
+        <Connector port="443"
+          minSpareThreads="25"
+          maxConnections = "1024"
+          acceptCount="2048"
+          enableLookups="false"
+          connectionTimeout="20000"
+          URIEncoding="UTF-8"
+          disableUploadTimeout="true"
+          scheme="https" secure="true" clientAuth="false" sslProtocol="TLS"
+          keystoreFile="/etc/tomcat9/private/server.keystore"
+          SSLEnabled="true" keystorePass="yourpassword"
+  />
+
