@@ -260,8 +260,9 @@ Config Tomcat9 SSL
 1. Put your certs (.srt and .key files) in */etc/tomcat9/private*
 2. *openssl pkcs12 -export -in /etc/tomcat9/private/sslchain.crt -inkey /etc/tomcat9/private/key.key -out /etc/tomcat9/private/server.p12 -name tomcat -CAfile /etc/tomcat9/private/certificate.pem -caname root*  ------ and type *yourpassword*
 3. *keytool -importkeystore -deststorepass yourpassword -destkeypass yourpassword -destkeystore /etc/tomcat9/private/server.keystore -srckeystore /etc/tomcat9/private/server.p12 -srcstoretype PKCS12 -srcstorepass yourpassword -alias tomcat*
-4. Add this to */etc/tomcat9/server.xml*:
-        <Connector port="443"
+4. Add this to */etc/tomcat9/server.xml* and comment *<Connector port=8080...*:
+       
+       <Connector port="443"
           minSpareThreads="25"
           maxConnections = "1024"
           acceptCount="2048"
@@ -271,6 +272,6 @@ Config Tomcat9 SSL
           disableUploadTimeout="true"
           scheme="https" secure="true" clientAuth="false" sslProtocol="TLS"
           keystoreFile="/etc/tomcat9/private/server.keystore"
-          SSLEnabled="true" keystorePass="yourpassword"
-  />
+          SSLEnabled="true" keystorePass="yourpassword" />
+  
 
