@@ -64,18 +64,24 @@ Exit the postgres user session: *exit*
 
 Restart Postgresql: *systemctl restart postgresql*
 
-## Install Apache Solr
+## Install Apache Solr as service
 
 We are looking for v 8.11 or above. NOT v9
-Create a directory to download and install solr: *sudo mkdir /opt/solr*
 
-Then download solr: *wget -c https://downloads.apache.org/lucene/solr/8.11.2/solr-8.11.2.tgz*
+Download solr: *wget -c https://downloads.apache.org/lucene/solr/8.11.2/solr-8.11.2.tgz* to */opt*
 
-Untar it and start: *../bin/solr start &* . Confirm solr is running with: *../bin/solr status*
+Do the following: *tar xzf solr-8.11.2.tgz solr-8.11.2/bin/install_solr_service.sh --strip-components=2*
 
-It can't start under root user (parametr "-force" it's not good for security), so then we will change it
+The previous command extracts the install_solr_service.sh script from the archive into the current directory.
 
- ##Install Apache Tomcat v9
+The installation script must be run as root: *bash ./install_solr_service.sh solr-8.11.2.tgz*
+
+*chown -R solr:solr /opt/solr-8.11.2*
+
+By default, the script extracts the distribution archive into /opt, configures Solr to write files into /var/solr, and runs Solr as the solr user.
+
+
+ ## Install Apache Tomcat v9
  
  Use the following command to install Apache Tomcat: *sudo apt install tomcat9*
  
@@ -157,7 +163,7 @@ Create an initial administrator account: *dspace/bin/dspace create-administrator
 
 Dump database from server where dspace v6.3 installed: *pg_dump -h localhost -U dspace > /home/dspace.sql*
 
-###Restore this database on new server:
+### Restore this database on new server:
 
 1. *su postgres*
 2. *psql* 
@@ -262,7 +268,7 @@ Config Tomcat9 SSL
 3. *keytool -importkeystore -deststorepass yourpassword -destkeypass yourpassword -destkeystore /etc/tomcat9/private/server.keystore -srckeystore /etc/tomcat9/private/server.p12 -srcstoretype PKCS12 -srcstorepass yourpassword -alias tomcat*
 4. Add this to */etc/tomcat9/server.xml* and comment *<Connector port=8080...*:
        
-       <Connector port="443"
+       <Connector port="8443"
           minSpareThreads="25"
           maxConnections = "1024"
           acceptCount="2048"
@@ -274,4 +280,45 @@ Config Tomcat9 SSL
           keystoreFile="/etc/tomcat9/private/server.keystore"
           SSLEnabled="true" keystorePass="yourpassword" />
   
+Now, our backend server will work on port 8443 so you can check it typing in browser https://youdomain:8443/server . It's not a problem, becouse later we will do redirect via nginx.
 
+## Config NGINX as proxy
+
+Add file to */etc/nginx/sites-enabled/donai.conf* with:
+
+ server {
+ listen 443 ssl default_server;
+ listen [::]:443 ssl default_server;
+ access_log /var/log/nginx/reverse-access.log;
+ error_log /var/log/nginx/reverse-error.log;
+ root /var/www/html;
+ ssl_certificate "/etc/ssl/private/sslchain.crt";
+ ssl_certificate_key "/etc/ssl/private/key.key";
+ location / {
+  proxy_pass http://localhost:4000;
+  }
+ location /server {
+ proxy_pass https://yourdomain:8443/server;
+ }
+
+Note: You should disable gzip for SSL traffic. See: https://bugs.debian.org/773332
+
+## Config UI connector:
+
+Make changes to */dspace-ui-deploy/config/config.prod.yml*:
+
+    rest:
+       ssl: true
+       host: yourdomain
+       port: 8443
+       nameSpace: /server
+
+Restart Tomcat: *service tomcat9 restart*
+
+Restart UI: *cd /dspace-ui-deploy* and type *pm2 restart dspace-ui.json*
+
+Reindex all content: */dspace/dspace index-discovery -b*
+
+Restart Nginx: *service nginx restart*
+
+To start Nginx automaticly after reboot: *update-rc.d nginx enable* or *systemctl enable nginx*
