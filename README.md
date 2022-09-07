@@ -64,19 +64,13 @@ Exit the postgres user session: *exit*
 
 Restart Postgresql: *systemctl restart postgresql*
 
-## Install Apache Solr as service
+## Install Apache Solr (as service it's not worked properly)
 
 We are looking for v 8.11 or above. NOT v9
 
 Download solr: *wget -c https://downloads.apache.org/lucene/solr/8.11.2/solr-8.11.2.tgz* to */opt*
 
-Do the following: *tar xzf solr-8.11.2.tgz solr-8.11.2/bin/install_solr_service.sh --strip-components=2*
-
-The previous command extracts the install_solr_service.sh script from the archive into the current directory.
-
-The installation script must be run as root: *bash ./install_solr_service.sh solr-8.11.2.tgz*
-
-*chown -R solr:solr /opt/solr-8.11.2*
+Rename to */opt/solr* and start via not root user: *su -c "/opt/solr/bin/solr start" - username*
 
 By default, the script extracts the distribution archive into /opt, configures Solr to write files into /var/solr, and runs Solr as the solr user.
 
