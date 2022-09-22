@@ -316,3 +316,14 @@ Reindex all content: */dspace/dspace index-discovery -b*
 Restart Nginx: *service nginx restart*
 
 To start Nginx automaticly after reboot: *update-rc.d nginx enable* or *systemctl enable nginx*
+
+# Interface customization
+
+## Languages
+
+To delete language from lang list on navbar - go to the *front-end-source/src/config* and edit file *default-app-config.ts*. Find block *languages: LangConfig[]* and change *active* value to false for langs which you dont want to see.
+
+If you want to add lang - you have to add this info to file *default-app-config.ts* and add file *uk.json5* to *front-end-source/src/assets*
+
+To recompile user interface - go to *front-end-source* and run *yarn install* and then *yarn build:prod*. Copy */dist* to *dspace-ui-deploy*. 
+
