@@ -327,3 +327,52 @@ If you want to add lang - you have to add this info to file *default-app-config.
 
 To recompile user interface - go to *front-end-source* and run *yarn install* and then *yarn build:prod*. Copy */dist* to *dspace-ui-deploy*. 
 
+## Change banner (background image) and logo
+
+Main banner is here: *dspace-angular-dspace-7.3/src/themes/dspace/assets/images*. Replace for own
+
+Main logo is here: *dspace-angular-dspace-7.3/src/assets/images* . Replace for own.
+
+## Change main text on banner
+
+Modify file: *dspace-angular-dspace-7.3/src/themes/dspace/app/home-page/home-news/home-news.component.html*. Also you can modify there name of background image. 
+
+Modify file: *dspace-angular-dspace-7.3/src/index.html* and *index.csr.html*
+
+## Change / translate text on cookie message
+
+Add text to *dspace-angular-dspace-7.3/src/app/shared/cookies/klaro-configuration.ts* to block *translate*:
+
+  
+    uk: {
+      acceptAll: "Прийняти все",
+      acceptSelected: "Прийняти вибране",
+      app: {
+        optOut: {
+          description: "Цей додаток був завантажений по замовчуванню. Але Ви можете відмовитись від нього",
+          title: "(відмовитись)"
+        },
+        purpose: "ціль",
+        purposes: "цілі",
+        required: {
+          description: "Цей додаток завжди потрібний",
+          title: "(завжди потрібний)"
+        }
+      },
+      close: "Закрити",
+      decline: "Відхилити",
+      ok: "Погоджуюсь",
+      changeDescription: 'cookies.consent.update',
+      consentNotice: {
+        description: "Ми збираємо та обробляємо вашу особисту інформацію для таких цілей: автентифікація, налаштування та статистика",     
+        learnMore: "Налаштувати"
+      },
+      consentModal: {
+        description: "Тут ви можете переглянути та налаштувати збір інформації про Вас.",
+        privacyPolicy: {
+          name: "політика приватності",
+          text: "Детальніше - внизу сторінки Ви знайдете покликання",
+        },
+        title: "Інформація, яку ми збираємо"
+      },
+
