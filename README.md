@@ -342,7 +342,7 @@ Modify file: *dspace-angular-dspace-7.3/src/index.html* and *index.csr.html*
 ## Change / translate text on cookie message
 
 Add text to *dspace-angular-dspace-7.3/src/app/shared/cookies/klaro-configuration.ts* to block *translate*:
-
+------ To disable this popup window - change in block translation value *en* to *uk*  --------
   
     uk: {
       acceptAll: "Прийняти все",
