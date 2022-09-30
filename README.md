@@ -376,3 +376,7 @@ Add text to *dspace-angular-dspace-7.3/src/app/shared/cookies/klaro-configuratio
         title: "Інформація, яку ми збираємо"
       },
 
+## To change page title from DSpace Angular :: Home 
+
+To change page title from *DSpace Angular :: Home* to your own - change *dspace-angular-dspace-7.3/cypress/integration/homepage.spec.ts*. Find string 
+*cy.title().should('eq', 'DSpace Angular :: Home');* and change for your own.
