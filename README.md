@@ -64,9 +64,11 @@ Exit the postgres user session: *exit*
 
 Restart Postgresql: *systemctl restart postgresql*
 
-## Install Apache Solr (as service it's not worked properly)
+## Install Apache Solr (manual and as service)
 
 We are looking for v 8.11 or above. NOT v9
+
+---------------------1. manual ----------------------
 
 Download solr: *wget -c https://downloads.apache.org/lucene/solr/8.11.2/solr-8.11.2.tgz* to */opt*
 
@@ -74,6 +76,27 @@ Rename to */opt/solr* and start via not root user: *su -c "/opt/solr/bin/solr st
 
 By default, the script extracts the distribution archive into /opt, configures Solr to write files into /var/solr, and runs Solr as the solr user.
 
+-------------------------2. as service. Not working well  ----------------------
+
+Download solr: *wget -c https://downloads.apache.org/lucene/solr/8.11.2/solr-8.11.2.tgz*
+
+Run: *tar xzf solr-8.11.2.tgz solr-8.11.2/bin/install_solr_service.sh --strip-components=2*
+
+Then run: *bash ./install_solr_service.sh solr-8.11.2.tgz*
+
+This command will install Solr as service. You can control Solr via command *service solr start|stop|restart*
+
+To remove solr:
+
+1. sudo service solr stop
+2. sudo rm -r /var/solr
+3. sudo rm -r /opt/solr-8.11.2
+4. sudo rm -r /opt/solr
+5. sudo rm /etc/init.d/solr
+6. sudo deluser --remove-home solr
+7. sudo deluser --group solr
+8. sudo update-rc.d -f solr remove
+9. sudo rm -rf /etc/default/solr.in.sh
 
  ## Install Apache Tomcat v9
  
