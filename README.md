@@ -403,3 +403,47 @@ Add text to *dspace-angular-dspace-7.3/src/app/shared/cookies/klaro-configuratio
 
 To change page title from *DSpace Angular :: Home* to your own - change *dspace-angular-dspace-7.3/cypress/integration/homepage.spec.ts*. Find string 
 *cy.title().should('eq', 'DSpace Angular :: Home');* and change for your own.
+
+# Troubleshooting
+
+1. If you cann't upload/add file(bitstream) to iteam :
+
+- *chown -R tomcat:tomcat /dspace*
+- change */lib/systemd/system/tomcat9.service* by adding string *ReadWritePaths=/dspace/* to Security block. 
+- *systemctl daemon-reload*
+- service tomcat9 restart
+
+2. Autostart Dspace
+
+1. Create shell script to restart all related with Dspace services. Put it */etc/init.d*  neme it dspace_auto_start.sh:
+
+  #!/bin/bash
+
+  su -c "/opt/solr/bin/solr stop -all" - root
+  su -c "/opt/solr/bin/solr start -force" - root
+  sleep 10
+  su -c "service tomcat9 restart" - root
+  sleep 5
+  #sudo /root/.nvm/versions/node/v14.20.0/bin/pm2 restart /dspace-ui-deploy/dspace-ui.json
+  cd /dspace-ui-deploy
+  sudo node ./dist/server/main.js
+
+2. Create service for script - */etc/systemd/system/dspace.service*:
+
+  [Unit]
+  Description=Auto start Dspace
+
+  [Service]
+  ExecStart=/etc/init.d/dspace_auto_start.sh
+
+  [Install]
+  WantedBy=multi-user.target
+  
+3. *service dspace enable*
+
+Now, if you want restart Dspace - just type *service dspace restart*
+
+*NOTE* If you start Dspace via *node ./dist/server/main.js* - you can not stop it via PM2. You must find PID of node and kill it. Just type:
+
+- lsof -i :4000
+- kill -9 PID
