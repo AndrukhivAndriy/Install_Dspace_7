@@ -105,7 +105,7 @@ To remove solr:
  Edit /etc/default/tomcat9 and define JAVA_HOME and JAVA_OPTS: 
  
  1. *JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64*
- 2. *JAVA_OPTS="-Djava.awt.headless=true -Xmx6G -Xms2G -Dfile.encoding=UTF-8"*,
+ 2. *JAVA_OPTS="-Djava.awt.headless=true -Xmx2048m -Xms1024m -XX:MaxPermSize=1024m -Dfile.encoding=UTF-"*,
  
  where -Xmx -- specifies the maximum memory allocation pool for a JVM, Xms -- specifies the initial memory allocation pool
  
@@ -472,7 +472,7 @@ Now, if you want restart Dspace - just type *service dspace restart*
 4. Set PGPASSFILE environment variable :
     export PGPASSFILE='/opt/.pgpass'
 
-The hole script:
+The hole script (backup.sh):
 
      rm -rf /home/backup/*
      sleep 10
@@ -483,3 +483,30 @@ The hole script:
      sleep 20
      drive upload --parent FOLDER_ID -f /home/backup
    
+-----------------------------------  CRON  --------------------------------
+
+    DSPACE = /dspace
+
+    #Shell to use
+    SHELL=/bin/sh
+
+    # Add all major 'bin' directories to path
+    PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+    # Set JAVA_OPTS with defaults for DSpace Cron Jobs.
+    # Only provides 512MB of memory by default (which should be enough for most sites).
+    JAVA_OPTS="-Djava.awt.headless=true -Xmx2048m -Xms1024m -XX:MaxPermSize=1024m -Dfile.encoding=UTF-8"
+
+    #--------------
+    # HOURLY TASKS (Recommended to be run multiple times per day, if possible)
+    # At a minimum these tasks should be run daily.
+    #--------------
+
+    # Regenerate DSpace Sitemaps every 8 hours (12AM, 8AM, 4PM).
+    # SiteMaps ensure that your content is more findable in Google, Google Scholar, and other major search engines.
+    0 1 * * FRI $DSPACE/bin/dspace generate-sitemaps > /dev/null
+    0 1 * * 0 $DSPACE/bin/dspace filter-media
+    0 4 * * 0 $DSPACE/bin/dspace index-discovery > /dev/null
+    0 1 1 * * $DSPACE/bin/dspace cleanup > /dev/null
+    0 7 * * 0 $DSPACE/bin/dspace oai import > /dev/null
+    0 3 */15 * * /opt/backup.sh
