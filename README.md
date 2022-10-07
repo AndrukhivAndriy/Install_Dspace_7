@@ -473,11 +473,13 @@ Now, if you want restart Dspace - just type *service dspace restart*
     export PGPASSFILE='/opt/.pgpass'
 
 The hole script:
-   rm -rf /home/backup/*
-   sleep 10
-   tar cvzf - /dspace/assetstore/ | split --bytes=2000MB - /home/backup/assetstore-$(date +%F).tar.gz
-   sleep 20
-   export PGPASSFILE='/opt/.pgpass'
-   pg_dump -h localhost -U dspace dspace > /home/backup/postgresql-$(date +%F).sql
-   sleep 20
-   drive upload --parent FOLDER_ID -f /home/backup
+
+     rm -rf /home/backup/*
+     sleep 10
+     tar cvzf - /dspace/assetstore/ | split --bytes=2000MB - /home/backup/assetstore-$(date +%F).tar.gz
+     sleep 20
+     export PGPASSFILE='/opt/.pgpass'
+     pg_dump -h localhost -U dspace dspace > /home/backup/postgresql-$(date +%F).sql
+     sleep 20
+     drive upload --parent FOLDER_ID -f /home/backup
+   
