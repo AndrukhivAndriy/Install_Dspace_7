@@ -447,3 +447,37 @@ Now, if you want restart Dspace - just type *service dspace restart*
 
 - lsof -i :4000
 - kill -9 PID
+
+--------------------------------------------------------------------------------------------------------
+
+## Dump Dspace to Google Disk (if you have corporate account with no limits. Not for single with 2Gb GD)
+
+  GOOGLE DRIVE
+
+1. Download utility Gdrive : *wget https://raw.githubusercontent.com/AnimMouse/gdrive-binaries/master/linux/gdrive-linux-x64*
+2. move to */usr/sbin* and rename as *gdrive*
+3. type *gdrive upload ./add-shell* - you will see authentication link. Copy it and run in your browser. Paste verification code in shell.  
+4. ---- All info about utility - https://github.com/prasmussen/gdrive/blob/master/README.md  -----
+5. Create new folder in your Google Disk. At the of URL in browser - you can find folder Id
+6. To upload file/s to Google Drive just run *gdrive upload --parent FOLDER_ID /file/to/upload*
+
+  SHELL SCRIPT to make dumps
+  
+1. Create .pgpass file with content
+    host:5432:somedb:someuser:somepass
+2. set the permissions
+    sudo chmod 600 .pgpass
+3. Set the file owner as the same user using which you logged in :
+    sudo chown postgres:postgres .pgpass
+4. Set PGPASSFILE environment variable :
+    export PGPASSFILE='/opt/.pgpass'
+
+The hole script:
+  rm -rf /home/backup/*
+  sleep 10
+  tar cvzf - /dspace/assetstore/ | split --bytes=2000MB - /home/backup/assetstore-$(date +%F).tar.gz
+  sleep 20
+  export PGPASSFILE='/opt/.pgpass'
+  pg_dump -h localhost -U dspace dspace > /home/backup/postgresql-$(date +%F).sql
+  sleep 20
+  drive upload --parent FOLDER_ID -f /home/backup
