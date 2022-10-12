@@ -346,15 +346,20 @@ To start Nginx automaticly after reboot: *update-rc.d nginx enable* or *systemct
 
 To delete language from lang list on navbar - go to the *front-end-source/src/config* and edit file *default-app-config.ts*. Find block *languages: LangConfig[]* and change *active* value to false for langs which you dont want to see.
 
-If you want to add lang - you have to add this info to file *default-app-config.ts* and add file *uk.json5* to *front-end-source/src/assets*
+If you want to add lang - you have to add this info to file *default-app-config.ts* and add file *uk.json5* to *front-end-source/src/assets/i18n*
 
-To recompile user interface - go to *front-end-source* and run *yarn install* and then *yarn build:prod*. Copy */dist* to *dspace-ui-deploy*. 
 
 ## Change banner (background image) and logo
 
 Main banner is here: *dspace-angular-dspace-7.3/src/themes/dspace/assets/images*. Replace for own
 
 Main logo is here: *dspace-angular-dspace-7.3/src/assets/images* . Replace for own.
+
+## Change user agreement
+
+You can find it: *dspace-angular-dspace-7.3/src/app/info/end-user-agreement/end-user-agreement*
+
+And privacy: *dspace-angular-dspace-7.3/src/app/info/privacy/privacy-content*
 
 ## Change main text on banner
 
@@ -403,6 +408,10 @@ Add text to *dspace-angular-dspace-7.3/src/app/shared/cookies/klaro-configuratio
 
 To change page title from *DSpace Angular :: Home* to your own - change *dspace-angular-dspace-7.3/cypress/integration/homepage.spec.ts*. Find string 
 *cy.title().should('eq', 'DSpace Angular :: Home');* and change for your own.
+
+After all changes - recompile user interface - go to *front-end-source* and run *yarn install* and then *yarn build:prod*. Copy */dist* to *dspace-ui-deploy*. And *pm2 restart dspace-ui.json*
+
+
 
 # Troubleshooting
 
