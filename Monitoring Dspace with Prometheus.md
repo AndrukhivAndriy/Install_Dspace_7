@@ -44,6 +44,7 @@
  ## Install Node Exporter
  
  1.  let's create a system user for Node Exporter
+                         
                          sudo useradd \
                           --system \
                           --no-create-home \
@@ -116,4 +117,50 @@
 
 12. *systemctl restart grafana-server*
 
+## Install solr-exporter
+
+1.                      sudo useradd \
+                          --system \
+                          --no-create-home \
+                          --shell /bin/false solr_exporter
+2. Find exporter in your Solr directory *opt/solr/contrib/prometheus-exporter*
+3. create similar systemd unit file:
+
+                [Unit]
+                Description=Node Exporter
+                Wants=network-online.target
+                After=network-online.target
+
+                StartLimitIntervalSec=500
+                StartLimitBurst=5
+
+                [Service]
+                User=solr_exporter
+                Group=solr_exporter
+                Type=simple
+                Restart=on-failure
+                RestartSec=5s
+                ExecStart=/opt/solr/contrib/prometheus-exporter/bin/solr-exporter \
+                <------><------><------>     -p 9854 \
+                <------><------><------>     -b http://localhost:8983/solr \
+                <------><------><------>     -f /opt/solr/contrib/prometheus-exporter/conf/solr-exporter-config.xml \
+                <------><------><------>     -n 8
+
+                [Install]
+                WantedBy=multi-user.target
                 
+4. Add a static target in /etc/prometheus/prometheus.yml:
+
+                - job_name: 'solr'
+                static_configs:
+                - targets: ['localhost:9854']
+ 
+5. Before, restarting check if the config is valid: *promtool check config /etc/prometheus/prometheus.yml*
+6. Restart prometheus
+7. import .json grafana dashboard from */opt/solr/contrib/prometheus-exporter/conf* . Find JETTY METRICS
+
+## Install Postgresql-exporter
+
+1. *wget -c https://github.com/prometheus-community/postgres_exporter/releases/download/v0.11.1/postgres_exporter-0.11.1.linux-amd64.tar.gz*
+2. *tar -xzvf prometh\** 
+3. 
