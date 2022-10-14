@@ -96,3 +96,24 @@
 6. *systemctl enable grafana-server*
 7. *systemctl start grafana-server*
 8. *ufw allow 3000*
+9. Config Grafana. Enable https and domain. Edit /etc/grafana/grafana.ini. And restart Grafana:
+
+                protocol = https
+                cert_key = /etc/grafana/KEY.key
+                cert_file = /etc/grafana/sslchain.crt
+                domain = yourdomain.com
+                
+10. Go to the browser and type: *https://yourdomain.com:3000*. The username is *admin*, and the password is *admin* as well. Change password to new one. 
+11. Create a new /etc/grafana/provisioning/datasources/datasources.yaml:
+
+                apiVersion: 1
+
+                datasources:
+                 - name: Prometheus
+                  type: prometheus
+                  url: http://localhost:9090
+                  isDefault: true
+
+12. *systemctl restart grafana-server*
+
+                
