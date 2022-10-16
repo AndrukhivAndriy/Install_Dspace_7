@@ -127,7 +127,7 @@
 3. create similar systemd unit file:
 
                 [Unit]
-                Description=Node Exporter
+                Description=Solr Exporter
                 Wants=network-online.target
                 After=network-online.target
 
@@ -162,5 +162,37 @@
 ## Install Postgresql-exporter
 
 1. *wget -c https://github.com/prometheus-community/postgres_exporter/releases/download/v0.11.1/postgres_exporter-0.11.1.linux-amd64.tar.gz*
-2. *tar -xzvf prometh\** 
-3. 
+2. *tar -xzvf postgres\** 
+3. Move binary to the /usr/local/bin
+4.                      sudo useradd \
+                           --system \
+                           --no-create-home \
+                           --shell /bin/false postgres_exporter
+5. create similar systemd unit file in /etc/system/systemd:
+
+                [Unit]
+                Description=Prometheus exporter for Postgresql
+                Wants=network-online.target
+                After=network-online.target
+                [Service]
+                User=postgres_exporter
+                Group=postgres_exporter
+                WorkingDirectory=/opt/postgres_exporter
+                EnvironmentFile=/opt/postgres_exporter/postgres_exporter.env
+                ExecStart=/usr/local/bin/postgres_exporter --web.listen-address=:9187 --web.telemetry-path=/metrics
+                Restart=always
+                [Install]
+                WantedBy=multi-user.target
+
+6. Create folder */opt/postgres_exporter*
+7. create */opt/postgres_exporter/postgres_exporter.env* with *DATA_SOURCE_NAME="postgresql://dspace:password@localhost:5432/dspace?sslmode=disable"*                 
+8. To automatically start the Posgres Exporter after reboot: *systemctl enable postgres_exporter*
+9. *systemctl start postgres_exporter*
+10. create a static target in /etc/prometheus/prometheus.yml:
+
+                - job_name: postgres
+                 static_configs:
+                   - targets: ["localhost:9187"]
+
+10. Before, restarting check if the config is valid: *promtool check config /etc/prometheus/prometheus.yml*
+11. *service prometheus restart*
