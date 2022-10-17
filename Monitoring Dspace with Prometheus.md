@@ -191,13 +191,40 @@
 10. create a static target in /etc/prometheus/prometheus.yml:
 
                 - job_name: postgres
-                 static_configs:
+                  static_configs:
                    - targets: ["localhost:9187"]
 
 10. Before, restarting check if the config is valid: *promtool check config /etc/prometheus/prometheus.yml*
 11. *service prometheus restart*
 
-## Install Tomcat exporter
+## Install Tomcat exporter (requires Java >= 7)
 
-1. Download exporter: *wget -c https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.9/jmx_prometheus_javaagent-0.9.jar*
-2. Add to */usr/share/tomcat9/bin/catalina.sh* as row 270 string *JAVA_OPTS="-javaagent:/usr/share/tomcat9/bin/jmx_prometheus_javaagent-0.9.jar=39081:/usr/share/tomcat/bin/tomcat.yml"* 
+1. Download exporter: *wget -c [jmx_prometheus_javaagent](https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar)*
+2. Add to */usr/share/tomcat9/bin/catalina.sh* as row 270 string *JAVA_OPTS="-javaagent:/usr/share/tomcat9/bin/jmx_prometheus_javaagent-0.17.2.jar=39081:/usr/share/tomcat9/bin/tomcat.yml"* 
+3. Create file */usr/share/tomcat9/bin/tomcat.yml* with:
+
+                ---   
+                lowercaseOutputLabelNames: true
+                lowercaseOutputName: true
+                whitelistObjectNames: ["java.lang:type=OperatingSystem"]
+                blacklistObjectNames: []
+                rules:
+                - pattern: 'java.lang<type=OperatingSystem><>           (committed_virtual_memory|free_physical_memory|free_swap_space|total_physical_memory|total_swap_space)_size:'
+                name: os_$1_bytes
+                type: GAUGE
+                attrNameSnakeCase: true
+                - pattern: 'java.lang<type=OperatingSystem><>((?!process_cpu_time)\w+):'
+                name: os_$1
+                type: GAUGE
+                attrNameSnakeCase: true
+
+
+**NOTE** More info (configuration) is avaible on https://github.com/prometheus/jmx_exporter
+
+4. Metrics will now be accessible at http://localhost:39081/metrics.
+5. Add to Prometheus:
+
+                - job_name: java
+                  static_configs:
+                   - targets: ["localhost:39081"]
+6. Add dashboard to grafana from https://grafana.com/grafana/dashboards/8563-jvm-dashboard/
