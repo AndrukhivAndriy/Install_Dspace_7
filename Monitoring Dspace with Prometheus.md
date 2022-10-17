@@ -196,3 +196,8 @@
 
 10. Before, restarting check if the config is valid: *promtool check config /etc/prometheus/prometheus.yml*
 11. *service prometheus restart*
+
+## Install Tomcat exporter
+
+1. Download exporter: *wget -c https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.9/jmx_prometheus_javaagent-0.9.jar*
+2. Add to */usr/share/tomcat9/bin/catalina.sh* as row 270 string *JAVA_OPTS="-javaagent:/usr/share/tomcat9/bin/jmx_prometheus_javaagent-0.9.jar=39081:/usr/share/tomcat/bin/tomcat.yml"* 
