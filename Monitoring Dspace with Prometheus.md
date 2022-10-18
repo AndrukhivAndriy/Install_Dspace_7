@@ -127,7 +127,7 @@
 3. create similar systemd unit file:
 
                 [Unit]
-                Description=Solr Exporter
+                Description=Nginx Exporter
                 Wants=network-online.target
                 After=network-online.target
 
@@ -219,3 +219,79 @@
                   static_configs:
                    - targets: ["localhost:39081"]
 6. Add dashboard to grafana from https://grafana.com/grafana/dashboards/8563-jvm-dashboard/
+
+## Simple NGINX monitoring
+
+1. wget -c https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v0.11.0/nginx-prometheus-exporter_0.11.0_linux_amd64.tar.gz
+2. Modify nginx config file by adding:
+
+                location = /nginx_stats {
+                    allow ADD_EXTERNAL_IP;
+                    stub_status;
+                    deny all;
+3. tar vxzf nginx*
+4. copy *nginx-prometheus-exporter* to */usr/local/bin*
+
+5.                          sudo useradd \
+                           --system \
+                           --no-create-home \
+                           --shell /bin/false nginx_exporter
+ 
+6.  Create service:
+
+        [Unit]
+        Description= Nginx Prometheus
+        Wants=network-online.target
+        After=network-online.target
+
+        [Service]
+        User=nginx_exporter
+        Group=nginx_exporter
+        Restart=always
+        Type=simple
+        ExecStart=/usr/local/bin/nginx-prometheus-exporter \
+            -nginx.scrape-uri=https://YOUR_ADDR/nginx_stats
+
+        [Install]
+        WantedBy=multi-user.target
+                     
+7. Add to Prometheus:
+
+                - job_name: nginx
+                  static_configs:
+                   - targets: ["localhost:9113"]    
+
+8. Add dashboard https://raw.githubusercontent.com/nginxinc/nginx-prometheus-exporter/main/grafana/dashboard.json
+
+## Install and config Alertmanager
+
+1. *wget -c [https://github.com/prometheus/alertmanager/](https://github.com/prometheus/alertmanager/releases/download/v0.24.0/alertmanager-0.24.0.linux-amd64.tar.gz)*
+2. *tar -xzvf alert\**
+3. *useradd -M -r -s /bin/false alertmanager*
+4. copy *alertmanager* to */usr/local/bin/*
+5. *chown alertmanager:alertmanager /usr/local/bin/alertmanager*
+6. *mkdir -p /etc/alertmanager*
+7. copy alertmanager.yml to */etc/alertmanager*
+8. *chown -R alertmanager:alertmanager /etc/alertmanager*
+9. *mkdir -p /var/lib/alertmanager*
+10. *chown alertmanager:alertmanager /var/lib/alertmanager*
+11. Create a systemd unit:
+
+                [Unit]
+                Description=Prometheus Alertmanager
+                Wants=network-online.target
+                After=network-online.target
+
+                [Service]
+                User=alertmanager
+                Group=alertmanager
+                Type=simple
+                ExecStart=/usr/local/bin/alertmanager \
+                --config.file /etc/alertmanager/alertmanager.yml \
+                --storage.path /var/lib/alertmanager
+
+                [Install]
+                WantedBy=multi-user.target
+                
+12. *systemctl start alertmanager*
+13. *systemctl enable alertmanager*                
