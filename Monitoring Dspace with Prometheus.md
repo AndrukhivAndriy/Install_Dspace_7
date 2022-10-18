@@ -200,23 +200,14 @@
 ## Install Tomcat exporter (requires Java >= 7)
 
 1. Download exporter: *wget -c [jmx_prometheus_javaagent](https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar)*
-2. Add to */usr/share/tomcat9/bin/catalina.sh* as row 270 string *JAVA_OPTS="-javaagent:/usr/share/tomcat9/bin/jmx_prometheus_javaagent-0.17.2.jar=39081:/usr/share/tomcat9/bin/tomcat.yml"* 
+2. Add to */usr/share/tomcat9/bin/catalina.sh* string *CATALINA_OPTS="-javaagent:/usr/share/tomcat9/bin/jmx_prometheus_javaagent-0.17.2.jar=39081:/usr/share/tomcat9/bin/tomcat.yml"* 
 3. Create file */usr/share/tomcat9/bin/tomcat.yml* with:
 
-                ---   
-                lowercaseOutputLabelNames: true
-                lowercaseOutputName: true
-                whitelistObjectNames: ["java.lang:type=OperatingSystem"]
-                blacklistObjectNames: []
-                rules:
-                - pattern: 'java.lang<type=OperatingSystem><>           (committed_virtual_memory|free_physical_memory|free_swap_space|total_physical_memory|total_swap_space)_size:'
-                name: os_$1_bytes
-                type: GAUGE
-                attrNameSnakeCase: true
-                - pattern: 'java.lang<type=OperatingSystem><>((?!process_cpu_time)\w+):'
-                name: os_$1
-                type: GAUGE
-                attrNameSnakeCase: true
+                ---
+                startDelaySeconds: 0
+                ssl: false
+                LowercaseOutputName: false
+                LowercaseOutputLabelNames: false
 
 
 **NOTE** More info (configuration) is avaible on https://github.com/prometheus/jmx_exporter
