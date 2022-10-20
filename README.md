@@ -12,6 +12,12 @@ To confirm the version installed on the system, type: *java -version*
 
 You will see thomething like this: *openjdk version "11.0.16" 2022-07-19 ....*
 
+## Install ImageMagick and ghostscript
+
+It's for thumbnails 
+
+*apt install imagemagick*
+
 ## Install Apache Maven and Ant
 
 DSpace 7.3 requires maven 3.3.x or above and 1.10.x or above
