@@ -295,3 +295,32 @@
                 
 12. *systemctl start alertmanager*
 13. *systemctl enable alertmanager*                
+14. Make new file with rules. For example /etc/promatheus/main.yml
+
+                groups:
+                - name: common rules
+                rules:
+
+                - alert: PrometheusTargetMissing
+                expr: up == 0
+                for: 0m
+                labels:
+                severity: critical
+                annotations:
+                summary: Prometheus target missing (instance {{ $labels.instance }})
+                description: "A Prometheus target has disappeared. An exporter might be crashed.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels ....
+
+15. Change config in etc/prometheus/prometheus.yml:
+
+                alerting:
+                 alertmanagers:
+                  - static_configs:
+                     - targets:
+                       - alertmanager:9093
+
+
+                rule_files:
+                - main.yml
+                
+16. You can find typical rules on https://awesome-prometheus-alerts.grep.to/rules.html
+17. After changes run - *promtool check config /etc/prometheus/prometheus.yml*
