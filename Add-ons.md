@@ -55,3 +55,4 @@ Every item must have metadatd field:
 
 Note that the dspace.iiif.enabled metadata field MUST be added to the Item and set to "true"
 
+Other data: https://wiki.lyrasis.org/display/DSDOC7x/IIIF+Configuration
