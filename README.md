@@ -525,3 +525,12 @@ The hole script (backup.sh):
     0 1 1 * * $DSPACE/bin/dspace cleanup > /dev/null
     0 7 * * 0 $DSPACE/bin/dspace oai import > /dev/null
     0 3 */15 * * /opt/backup.sh
+
+
+## Gmail. send email error 
+
+Uncomment in dspace.cfg
+
+    mail.extraproperties = mail.smtp.socketFactory.port=465, \                      
+         mail.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory, \                 
+         mail.smtp.socketFactory.fallback=false
