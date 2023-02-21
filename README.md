@@ -425,7 +425,9 @@ To change page title from *DSpace Angular :: Home* to your own - change *dspace-
 
 After all changes - recompile user interface - go to *front-end-source* and run *yarn install* and then *yarn build:prod*. Copy */dist* to *dspace-ui-deploy*. And *pm2 restart dspace-ui.json*
 
+## favicon
 
+dspace-angular-dspace-7.5/src/assets/images/favicon.ico
 
 # Troubleshooting
 
