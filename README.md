@@ -373,7 +373,15 @@ Modify file: *dspace-angular-dspace-7.3/src/themes/dspace/app/home-page/home-new
 
 Modify file: *dspace-angular-dspace-7.3/src/index.html* and *index.csr.html*
 
-## Change / translate text on cookie message
+## Change dspace logo
+
+Modify file: dspace-angular-dspace-7.5/src/assets/images/dspace-logo.png {.svg}
+
+## Translation 
+
+Files are dspace-angular-dspace-7.5/src/assets/i18n
+
+## Change / translate text on cookie message (for versions less 7.5)
 
 Add text to *dspace-angular-dspace-7.3/src/app/shared/cookies/klaro-configuration.ts* to block *translate*:
 ------ To disable this popup window - change in block translation value *en* to *uk*  --------
