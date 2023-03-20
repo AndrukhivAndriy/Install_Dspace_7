@@ -381,42 +381,13 @@ Modify file: dspace-angular-dspace-7.5/src/assets/images/dspace-logo.png {.svg}
 
 Files are dspace-angular-dspace-7.5/src/assets/i18n
 
-## Change / translate text on cookie message (for versions less 7.5)
+## Edit robots.txt
 
-Add text to *dspace-angular-dspace-7.3/src/app/shared/cookies/klaro-configuration.ts* to block *translate*:
------- To disable this popup window - change in block translation value *en* to *uk*  --------
-  
-    uk: {
-      acceptAll: "Прийняти все",
-      acceptSelected: "Прийняти вибране",
-      app: {
-        optOut: {
-          description: "Цей додаток був завантажений по замовчуванню. Але Ви можете відмовитись від нього",
-          title: "(відмовитись)"
-        },
-        purpose: "ціль",
-        purposes: "цілі",
-        required: {
-          description: "Цей додаток завжди потрібний",
-          title: "(завжди потрібний)"
-        }
-      },
-      close: "Закрити",
-      decline: "Відхилити",
-      ok: "Погоджуюсь",
-      changeDescription: 'cookies.consent.update',
-      consentNotice: {
-        description: "Ми збираємо та обробляємо вашу особисту інформацію для таких цілей: автентифікація, налаштування та статистика",     
-        learnMore: "Налаштувати"
-      },
-      consentModal: {
-        description: "Тут ви можете переглянути та налаштувати збір інформації про Вас.",
-        privacyPolicy: {
-          name: "політика приватності",
-          text: "Детальніше - внизу сторінки Ви знайдете покликання",
-        },
-        title: "Інформація, яку ми збираємо"
-      },
+In UI Interface find src/robots.txt.ejs and edit strings:
+
+    Sitemap: <%= origin %>/sitemap_index.xml
+    Sitemap: <%= origin %>/sitemap_index.html
+
 
 ## To change page title from DSpace Angular :: Home 
 
