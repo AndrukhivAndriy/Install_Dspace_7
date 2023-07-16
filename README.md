@@ -402,7 +402,13 @@ dspace-angular-dspace-7.5/src/assets/images/favicon.ico
 
 # Troubleshooting
 
-1. If you cann't upload/add file(bitstream) to iteam :
+0. On error Command failed with exit code 137 mean that you don't have enough memory to build project. To solve it
+   - service tomcat9 stop
+   - service nginx stop
+   - RUN yarn WITH PARAMETER: NODE_OPTIONS="--max-old-space-size=8192" yarn build:prod
+   - start tomcat, nginx
+
+2. If you cann't upload/add file(bitstream) to iteam :
 
 - *chown -R tomcat:tomcat /dspace*
 - change */lib/systemd/system/tomcat9.service* by adding string *ReadWritePaths=/dspace/* to Security block. 
