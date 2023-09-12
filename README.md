@@ -287,8 +287,8 @@ Run your browser and type *http://localhost:4000* . Dspace installed!!
 Config Tomcat9 SSL
 
 1. Put your certs (.srt and .key files) in */etc/tomcat9/private*
-2. *openssl pkcs12 -export -in /etc/tomcat9/private/sslchain.crt -inkey /etc/tomcat9/private/key.key -out /etc/tomcat9/private/server.p12 -name tomcat -CAfile /etc/tomcat9/private/certificate.pem -caname root*  ------ and type *yourpassword*
-3. *keytool -importkeystore -deststorepass yourpassword -destkeypass yourpassword -destkeystore /etc/tomcat9/private/server.keystore -srckeystore /etc/tomcat9/private/server.p12 -srcstoretype PKCS12 -srcstorepass yourpassword -alias tomcat*
+2. *openssl pkcs12 -export -in /etc/tomcat9/private/sslchain.crt -inkey /etc/tomcat9/private/key.key -out /etc/tomcat9/private/server.p12 -name tomcat -CAfile /etc/tomcat9/private/certificate.pem -caname root*  ------ and type *yourpassword: 12345678*
+3. *keytool -importkeystore -destkeypass 12345678 -destkeystore /etc/tomcat9/private/server.keystore -srckeystore /etc/tomcat9/private/server.p12 -srcstoretype PKCS12 -srcstorepass 12345678 -alias tomcat*
 4. Add this to */etc/tomcat9/server.xml* and comment *<Connector port=8080...*:
        
        <Connector port="8443"
@@ -301,7 +301,7 @@ Config Tomcat9 SSL
           disableUploadTimeout="true"
           scheme="https" secure="true" clientAuth="false" sslProtocol="TLS"
           keystoreFile="/etc/tomcat9/private/server.keystore"
-          SSLEnabled="true" keystorePass="yourpassword" />
+          SSLEnabled="true" keystorePass="12345678" />
   
 Now, our backend server will work on port 8443 so you can check it typing in browser https://youdomain:8443/server . It's not a problem, becouse later we will do redirect via nginx.
 
