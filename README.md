@@ -2,6 +2,8 @@
 
 The official manual you can find - https://wiki.lyrasis.org/display/DSDOC7x/Installing+DSpace
 
+https://hyperlink.co.ke/2023/11/03/install-dspace-7-6-on-ubuntu-22-04/
+
 The first and main step is upgrade system: *apt update && apt upgrade*
 
 ## Install JAVA 11
